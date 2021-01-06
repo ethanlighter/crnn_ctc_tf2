@@ -1,3 +1,5 @@
+import sys
+sys.path.append('../')
 from tools.utils import ctc_decode,cacualte_acc
 from model.model import vgg_crnn
 from dataset.tf_data_handler import tf_data_handler
@@ -8,6 +10,10 @@ from config import Config
 import os
 import numpy as np
 import logging
+gpus = tf.config.experimental.list_physical_devices(device_type='GPU')
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
+    tf.config.experimental.set_memory_growth(gpu, True)
 # tf_config = tf.ConfigProto()
 # tf_config.gpu_options.per_process_gpu_memory_fraction = 0.9 # 分配50%
 # tf_config.gpu_options.allow_growth = True # 自适应
@@ -59,16 +65,18 @@ def tf_data_train():
     data_handler_obj = tf_data_handler()
     train_loader = data_handler_obj.get_data_loader(Config.train_anno, batch_size=Config.train_batch_size,img_root=Config.img_root,is_train=True)
     test_loader = data_handler_obj.get_data_loader(Config.test_anno, batch_size=Config.train_batch_size,img_root=Config.img_root)
-    optimizer = tf.keras.optimizers.Adam(learning_rate=0.0005,decay=0.000005)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
     model = vgg_crnn()
+    start_epoch = 0
     if len(Config.pre_weight) > 1:
         model.load_weights(Config.pre_weight)
         logging.info("load pretrain weights from {0}".format(Config.pre_weight))
+        start_epoch = Config.start_epoch_num
         print("读取模型文件成功")
     summary_writer = tf.summary.create_file_writer(Config.log_dir)
     step_num = 0
     with summary_writer.as_default():
-        for epoch in range(Config.epoch):
+        for epoch in range(start_epoch,Config.epoch):
             epoch_loss_avg = tf.keras.metrics.Mean()
             for index, item in enumerate(tqdm(train_loader)):
                 with tf.GradientTape() as tape:

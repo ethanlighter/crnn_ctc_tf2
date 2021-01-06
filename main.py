@@ -24,7 +24,7 @@ def main():
         if model_file is None or img_path is None:
             print("请指定测试模型和图片所在路径")
             return -1
-        demo(model_file,img_path)
+        demo(img_path)
 
 if __name__ == "__main__":
     main()
