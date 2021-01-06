@@ -27,3 +27,6 @@ python main.py --type train
 python main.py --type test --model_file {模型参数文件路径}
 demo:
 python main.py --model_file {模型文件路径} --img_path {图片路径}
+--------------------------------------------------------------------
+您也可以直接下载已经训练好的中文通用文字识别模型，下载地址 ： 链接: https://pan.baidu.com/s/1mcxZmvzABE-L-4CRRUc85g  密码: v1cl
+下载好之后修改demo.py中的模型路径，即可使用该模型，该模型使用的字典为dict文件夹下的ppocr_keys_v1，该字典来源于百度paddleocr中文字典
